@@ -1,0 +1,29 @@
+This Baum-Welch algorithm implementation was created by Lucy Paddock and Tona Gonzalez
+
+Overview and Files:
+    Our new code is separated into 3 files: findIslands.py, forwardBackward.py, and baumWelch.py.
+    forwardBackward.py contains the code for the implementations of the forward and backward algorithms.
+    baumWelch.py contains code that creates and updates all the dictionaries necessary for the baum welch algorithm.
+    findIslands.py contains a main function that acts as a wrapper and calls the functions in baumWelch.py and forwardBackward.py to make a final transition probabilities dictionary.
+    Additionally, findIslands.py uses the viterbi algorithm from our homework to predict the states (island or nonisland) of the nucleotides in the input sequence and print them to an output file.
+    We also used the islandPredictionSummaryStats function given in the viterbi homework to print out summary statistics describing how accurate our prediction is.
+
+
+Comments on implementation:
+    From baumWelch.py:
+        initTransD: 
+            We used the numpy.random.multinomial function to ensure all the probabilities leaving a state added up to one and were 50x for within vs. between states.
+            The multinomial function creates a random list of set length where all the entries sum to a given input.
+            We created 2 lists, one where the sum was 50x that of the other. Then we converted them to probabilities and assigned them to the appropriate transitions.
+            You can manipulate WITHINTIMESLARGER to adjust how much greater the within state probabilities are than the between state probabilities.
+        makeTransIndexD:
+            We decided to find all the locations where a specific transition occurred and stored them in a dictionary to make later functions more efficient.
+            This made finding the forward and backward entries for each transition easier when we were calculating counts.
+
+    From findIslands.py:
+        DELTA:
+            You can choose DELTA to be anything you want, but a smaller number will give you a more accurate transition probabilities dictionary.
+            With a DELTA of 0.001, we got these results:
+                Sensitivity (TPR): 0.767
+                Specificity (TNR): 0.789
+                Youden's J       : 0.556

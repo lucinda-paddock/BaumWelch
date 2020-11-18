@@ -1,9 +1,7 @@
 import math
 import fasta
-from context import *
 
-
-def islandPedictionSummaryStats(predict,correct):
+def islandPredictionSummaryStats(predict,correct):
     """Print some statistics summarizing how good the prediction is
     relative to the correct solution. Our definitions of sensitivity
     and specificity assume the 'lower case' model represents the
@@ -26,31 +24,6 @@ def islandPedictionSummaryStats(predict,correct):
     print("Specificity (TNR):", format(specificity,".3f"))
     print("Youden's J       :", format(sensitivity + specificity - 1,".3f"))
     
-
-def runExample():
-    """Wrapper to run the provided cpg example."""
-    
-    states = ["A","C","G","T","a","c","g","t"]
-    
-    # calculate transition matrix from using A solution for training
-    Asolution=fasta.load("A-cpgSolution.fa")[0][1]
-    cpgTransD,cpgCountD=context([Asolution],1,states,1)
-    cpgTransD = logDictValues(cpgTransD)
-    
-    # now use viterbi to get sol for B
-    B=fasta.load("B-region.fa")[0][1]
-    scM,btM=viterbi(B,cpgTransD)
-    solB=bt(B,scM,btM)
-
-    f=open("Bpredict.fa","w")
-    print("> prediction",file=f)
-    print(solB,file=f)
-    f.close()
-
-    # test out our results on B vs. the provided solution
-    Bsolution=fasta.load("B-cpgSolution.fa")[0][1]
-    islandPedictionSummaryStats(solB,Bsolution)
-
 def viterbi(seq,transD):
     '''takes a sequence seq and a matrix of transition probabilities transD (in the form of a 
     dictionary) as input. It uses the viterbi algorithm to fill out a score table and a backtracking 
@@ -115,19 +88,3 @@ def bt(seq,scM,btM):
             if btM[1][i] == "-":
                 lastVal = "-"
     return path
-
-
-
-
-'''
-
-ts="AAGCAGTA"
-states = ["A","C","G","T","a","c","g","t"]
-Asolution=fasta.load("A-cpgSolution.fa")[0][1]
-cpgTransD,cpgCountD=context([Asolution],1,states,1)
-cpgTransD = logDictValues(cpgTransD)
-tsScM,tsbtM=viterbi(ts.upper(),cpgTransD)
-
-tsbtM = [['NA', '-', '-', '-', '-', '-', '-', '+'], ['NA', '+', '+', '+', '-', '+', '+', '+']]
-bt(ts,tsScM,tsbtM)
-'''
